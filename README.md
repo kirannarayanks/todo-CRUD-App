@@ -1,6 +1,6 @@
 #todo-CRUD-App
 
-    A react based todo app that have all the CRUD features
+    A react based todo app that have all the CRUD features.
 
 fetaures:
 
@@ -9,3 +9,7 @@ fetaures:
     user can delete the tasks
     user friendly design
     user can easily distinguish the completed and uncompleted tasks 
+
+Database    
+
+    Fiebase is used as databse of the app which is a NoSQL based database.
