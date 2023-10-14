@@ -2,7 +2,7 @@ import React, { useState ,useEffect} from 'react'
 import '../components/task.css'
 import Add from '../images/add.png'
 import { db } from '../firebase/config'
-import {addDoc,collection,getDocs,updateDoc,doc,deleteDoc} from 'firebase/firestore'
+import {addDoc,collection,getDocs,updateDoc,doc,deleteDoc, limitToLast} from 'firebase/firestore'
 
 
 function Task() {
@@ -20,9 +20,11 @@ function Task() {
   },[])
   
   const addTask= async () =>{
-    await addDoc(taskCollectionRef,task).then(()=>{
+    await addDoc(taskCollectionRef,task).then((response)=>{
       document.getElementById('input').value = "";
-      window.location.reload();
+      console.log(response.id);
+      task.id = response.id;
+      setList([...list,task]);
     }
       )
   }
@@ -30,13 +32,30 @@ function Task() {
     console.log(id,sts);
     const stus = !sts;
     const currentRef = doc(db,"tasks",id);
-    await updateDoc(currentRef,{status:stus})
-    window.location.reload();
+    await updateDoc(currentRef,{status:stus}).then(()=>{
+      console.log("updateDoc success");
+      setList(list.filter((obj)=>{
+        
+        if(obj.id === id){
+          console.log(obj.task,obj.status)
+          obj.status = stus;
+          console.log(obj.task,obj.status)
+        }
+        return obj;
+      }))
+
+    })
+    
   }
   const deleteTask = async (id) => {
     const currentRef = doc(db,"tasks",id);
-    await deleteDoc(currentRef);
-    window.location.reload();
+    await deleteDoc(currentRef).then(()=>{
+      setList(list.filter((obj)=>{
+        if(obj.id != id){
+          return obj;
+        }
+      }))
+    });
   }
   return (
     
